@@ -47,11 +47,9 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  // Redirect root to dashboard or login
-  if (pathname === "/") {
-    return NextResponse.redirect(
-      new URL(user ? "/dashboard" : "/login", request.url)
-    );
+  // Authenticated users hitting the landing page go straight to the app
+  if (user && pathname === "/") {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   return supabaseResponse;
