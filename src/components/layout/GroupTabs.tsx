@@ -11,7 +11,6 @@ export default function GroupTabs({ groupId }: { groupId: string }) {
   const tabs = [
     { key: "tabs.feed" as const, href: `/groups/${groupId}/feed` },
     { key: "tabs.balances" as const, href: `/groups/${groupId}/balances` },
-    { key: "tabs.settleUp" as const, href: `/groups/${groupId}/settle` },
     { key: "tabs.settings" as const, href: `/groups/${groupId}/settings` },
   ];
 
