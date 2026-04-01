@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-sans: "Plus Jakarta Sans", sans-serif;
+  }
+
+  body {
+    @apply bg-zinc-50 text-zinc-900 antialiased;
+    font-family: var(--font-sans);
+  }
+
+  * {
+    @apply border-zinc-200;
+  }
+}
+
+@layer components {
+  /* Dark stat card */
+  .stat-card-dark {
+    @apply bg-zinc-950 text-white rounded-2xl p-5;
+  }
+
+  /* Light content card */
+  .card {
+    @apply bg-white rounded-2xl border border-zinc-100 shadow-sm;
+  }
+
+  /* Primary button (black) */
+  .btn-primary {
+    @apply bg-zinc-900 text-white rounded-xl px-4 py-2.5 text-sm font-semibold hover:bg-zinc-800 transition-colors;
+  }
+
+  /* Accent button (yellow) */
+  .btn-accent {
+    @apply bg-yellow-400 text-zinc-900 rounded-xl px-4 py-2.5 text-sm font-semibold hover:bg-yellow-300 transition-colors;
+  }
+
+  /* Ghost button */
+  .btn-ghost {
+    @apply border border-zinc-200 text-zinc-700 rounded-xl px-4 py-2.5 text-sm font-medium hover:bg-zinc-100 transition-colors;
+  }
+}

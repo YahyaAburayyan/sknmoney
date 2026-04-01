@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /c/Users/yahia/OneDrive/Desktop/SknMoney -type f -name *.json -o -name *.txt -o -name *.md -o -name *.yaml -o -name *.yml -o -name *.env*)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --app --src-dir --import-alias \"@/*\" --no-git --yes)",
+      "Read(//c/Program Files/**)",
+      "Read(//c/Users/yahia/AppData/Roaming/**)",
+      "Read(//c/Users/yahia/.nvm/versions/**)",
+      "Read(//c/Users/yahia/AppData/Local/**)",
+      "Read(//c/Users/yahia/scoop/apps/**)",
+      "Read(//c/ProgramData/chocolatey/bin/**)",
+      "Bash(cmd /c \"where node 2>nul\")",
+      "Bash(cmd /c \"where node\")",
+      "Bash(cmd /c \"where npm\")",
+      "Bash(cmd /c \"where npx\")",
+      "Bash(export PATH=\"/c/Program Files/nodejs:$PATH\")",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)"
+    ]
+  }
+}
