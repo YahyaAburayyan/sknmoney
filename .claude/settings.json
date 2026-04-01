@@ -11,7 +11,8 @@
       "WebSearch",
       "WebFetch(domain:cdn.godly.website)",
       "Bash(start chrome:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(gh auth:*)"
     ]
   }
 }

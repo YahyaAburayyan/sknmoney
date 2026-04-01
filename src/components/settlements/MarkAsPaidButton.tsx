@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { markAsPaid, confirmPaymentReceived } from "@/actions/settlements";
+import { useT } from "@/components/providers/LanguageProvider";
 
 interface MarkAsPaidButtonProps {
   groupId: string;
@@ -16,6 +17,7 @@ export default function MarkAsPaidButton({
   direction,
   otherUserId,
 }: MarkAsPaidButtonProps) {
+  const { t } = useT();
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -40,12 +42,12 @@ export default function MarkAsPaidButton({
   if (done) {
     return (
       <span className="text-xs text-emerald-600 font-bold px-3 py-1.5 bg-emerald-50 rounded-lg">
-        ✓ Recorded
+        {t("balances.recorded")}
       </span>
     );
   }
 
-  const label = direction === "debtor" ? "Mark as Paid" : "Confirm Received";
+  const label = direction === "debtor" ? t("balances.markAsPaid") : t("balances.confirmReceived");
   const style =
     direction === "debtor"
       ? "bg-zinc-950 text-white hover:bg-zinc-800"
@@ -58,9 +60,9 @@ export default function MarkAsPaidButton({
         disabled={loading}
         className={`text-xs px-3 py-1.5 rounded-lg font-bold disabled:opacity-50 transition-colors ${style}`}
       >
-        {loading ? "Saving…" : label}
+        {loading ? t("balances.saving") : label}
       </button>
-      {error && <p className="text-xs text-rose-500 max-w-[120px] text-right">{error}</p>}
+      {error && <p className="text-xs text-rose-500 max-w-[140px] text-end">{error}</p>}
     </div>
   );
 }

@@ -6,6 +6,7 @@ import SplitSelector from "./SplitSelector";
 import { parseCurrencyInput, centsToDecimalString } from "@/lib/utils/currency";
 import { todayISO } from "@/lib/utils/dates";
 import type { Profile } from "@/types/app";
+import { useT } from "@/components/providers/LanguageProvider";
 
 interface ExpenseFormProps {
   groupId: string;
@@ -16,11 +17,8 @@ interface ExpenseFormProps {
 const inputClass =
   "w-full bg-zinc-50 border border-zinc-200 text-zinc-900 rounded-xl px-4 py-3 text-sm placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition";
 
-export default function ExpenseForm({
-  groupId,
-  members,
-  currentUserId,
-}: ExpenseFormProps) {
+export default function ExpenseForm({ groupId, members, currentUserId }: ExpenseFormProps) {
+  const { t } = useT();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [amountInput, setAmountInput] = useState("");
@@ -71,27 +69,25 @@ export default function ExpenseForm({
   return (
     <div className="bg-white rounded-3xl border border-zinc-100 p-7">
       <form onSubmit={handleSubmit} className="space-y-5">
-        {/* Description */}
         <div>
           <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">
-            Description <span className="text-yellow-500">*</span>
+            {t("expense.description")} <span className="text-yellow-500">*</span>
           </label>
           <input
             name="description"
             type="text"
             required
-            placeholder="Groceries, Rent, Electricity…"
+            placeholder={t("expense.placeholder.description")}
             className={inputClass}
           />
         </div>
 
-        {/* Amount */}
         <div>
           <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">
-            Amount <span className="text-yellow-500">*</span>
+            {t("expense.amount")} <span className="text-yellow-500">*</span>
           </label>
           <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 font-semibold text-sm">$</span>
+            <span className="absolute start-4 top-1/2 -translate-y-1/2 text-zinc-400 font-semibold text-sm">$</span>
             <input
               name="amount"
               type="number"
@@ -101,47 +97,34 @@ export default function ExpenseForm({
               value={amountInput}
               onChange={(e) => setAmountInput(e.target.value)}
               placeholder="0.00"
-              className={`${inputClass} pl-8`}
+              className={`${inputClass} ps-8`}
             />
           </div>
         </div>
 
-        {/* Paid by */}
         <div>
           <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">
-            Paid by
+            {t("expense.paidBy")}
           </label>
-          <select
-            value={paidBy}
-            onChange={(e) => setPaidBy(e.target.value)}
-            className={inputClass}
-          >
+          <select value={paidBy} onChange={(e) => setPaidBy(e.target.value)} className={inputClass}>
             {members.map((m) => (
               <option key={m.id} value={m.id}>
-                {m.display_name} {m.id === currentUserId ? "(you)" : ""}
+                {m.display_name} {m.id === currentUserId ? t("expense.you") : ""}
               </option>
             ))}
           </select>
         </div>
 
-        {/* Date */}
         <div>
           <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">
-            Date
+            {t("expense.date")}
           </label>
-          <input
-            name="date"
-            type="date"
-            defaultValue={todayISO()}
-            required
-            className={inputClass}
-          />
+          <input name="date" type="date" defaultValue={todayISO()} required className={inputClass} />
         </div>
 
-        {/* Split type toggle */}
         <div>
           <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">
-            Split type
+            {t("expense.splitType")}
           </label>
           <div className="flex gap-2">
             {(["equal", "custom"] as const).map((type) => (
@@ -149,19 +132,18 @@ export default function ExpenseForm({
                 key={type}
                 type="button"
                 onClick={() => setSplitType(type)}
-                className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all capitalize ${
+                className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all ${
                   splitType === type
                     ? "bg-zinc-950 text-yellow-400"
                     : "bg-zinc-100 text-zinc-500 hover:bg-zinc-200"
                 }`}
               >
-                {type}
+                {type === "equal" ? t("expense.equal") : t("expense.custom")}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Split selector */}
         <div className="bg-zinc-50 border border-zinc-200 rounded-2xl overflow-hidden">
           <SplitSelector
             members={members as Profile[]}
@@ -171,23 +153,20 @@ export default function ExpenseForm({
           />
         </div>
 
-        {/* Notes */}
         <div>
           <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">
-            Notes <span className="text-zinc-300 font-normal normal-case">(optional)</span>
+            {t("expense.notes")} <span className="text-zinc-300 font-normal normal-case">{t("expense.optional")}</span>
           </label>
           <input
             name="notes"
             type="text"
-            placeholder="Any extra details…"
+            placeholder={t("expense.placeholder.notes")}
             className={inputClass}
           />
         </div>
 
         {error && (
-          <div className="text-sm text-rose-600 bg-rose-50 border border-rose-100 rounded-xl px-4 py-3">
-            {error}
-          </div>
+          <div className="text-sm text-rose-600 bg-rose-50 border border-rose-100 rounded-xl px-4 py-3">{error}</div>
         )}
 
         <button
@@ -195,7 +174,7 @@ export default function ExpenseForm({
           disabled={loading}
           className="w-full bg-yellow-400 hover:bg-yellow-300 disabled:opacity-60 text-zinc-900 font-bold py-3 px-4 rounded-xl transition-colors text-sm"
         >
-          {loading ? "Saving…" : "Add expense"}
+          {loading ? t("expense.saving") : t("expense.submit")}
         </button>
       </form>
     </div>

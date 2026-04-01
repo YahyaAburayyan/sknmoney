@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createSettlement } from "@/actions/settlements";
 import { parseCurrencyInput, centsToDecimalString } from "@/lib/utils/currency";
 import { todayISO } from "@/lib/utils/dates";
+import { useT } from "@/components/providers/LanguageProvider";
 
 interface SettlementFormProps {
   groupId: string;
@@ -15,12 +16,8 @@ interface SettlementFormProps {
 const inputClass =
   "w-full bg-zinc-50 border border-zinc-200 text-zinc-900 rounded-xl px-4 py-3 text-sm placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition";
 
-export default function SettlementForm({
-  groupId,
-  members,
-  prefilledTo,
-  prefilledAmountCents,
-}: SettlementFormProps) {
+export default function SettlementForm({ groupId, members, prefilledTo, prefilledAmountCents }: SettlementFormProps) {
+  const { t } = useT();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [amountInput, setAmountInput] = useState(
@@ -60,43 +57,32 @@ export default function SettlementForm({
   if (members.length === 0) {
     return (
       <div className="bg-white rounded-2xl border border-zinc-100 p-6 text-center text-zinc-400">
-        No other members in this group yet.
+        {t("settle.noMembers")}
       </div>
     );
   }
 
   return (
     <div className="bg-white rounded-3xl border border-zinc-100 p-7">
-      <p className="text-sm text-zinc-500 mb-6">
-        Record money you paid to a group member. This will update the balances for everyone.
-      </p>
+      <p className="text-sm text-zinc-500 mb-6">{t("settle.subtitle")}</p>
       <form onSubmit={handleSubmit} className="space-y-5">
-        {/* Paid to */}
         <div>
           <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">
-            I paid <span className="text-yellow-500">*</span>
+            {t("settle.iPaid")} <span className="text-yellow-500">*</span>
           </label>
-          <select
-            value={paidTo}
-            onChange={(e) => setPaidTo(e.target.value)}
-            required
-            className={inputClass}
-          >
+          <select value={paidTo} onChange={(e) => setPaidTo(e.target.value)} required className={inputClass}>
             {members.map((m) => (
-              <option key={m.id} value={m.id}>
-                {m.display_name}
-              </option>
+              <option key={m.id} value={m.id}>{m.display_name}</option>
             ))}
           </select>
         </div>
 
-        {/* Amount */}
         <div>
           <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">
-            Amount <span className="text-yellow-500">*</span>
+            {t("settle.amount")} <span className="text-yellow-500">*</span>
           </label>
           <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 font-semibold text-sm">$</span>
+            <span className="absolute start-4 top-1/2 -translate-y-1/2 text-zinc-400 font-semibold text-sm">$</span>
             <input
               name="amount"
               type="number"
@@ -106,42 +92,27 @@ export default function SettlementForm({
               value={amountInput}
               onChange={(e) => setAmountInput(e.target.value)}
               placeholder="0.00"
-              className={`${inputClass} pl-8`}
+              className={`${inputClass} ps-8`}
             />
           </div>
         </div>
 
-        {/* Date */}
         <div>
           <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">
-            Date
+            {t("settle.date")}
           </label>
-          <input
-            name="date"
-            type="date"
-            defaultValue={todayISO()}
-            required
-            className={inputClass}
-          />
+          <input name="date" type="date" defaultValue={todayISO()} required className={inputClass} />
         </div>
 
-        {/* Notes */}
         <div>
           <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">
-            Notes <span className="text-zinc-300 font-normal normal-case">(optional)</span>
+            {t("settle.notes")} <span className="text-zinc-300 font-normal normal-case">{t("settle.optional")}</span>
           </label>
-          <input
-            name="notes"
-            type="text"
-            placeholder="Cash, bank transfer…"
-            className={inputClass}
-          />
+          <input name="notes" type="text" placeholder={t("settle.placeholder.notes")} className={inputClass} />
         </div>
 
         {error && (
-          <div className="text-sm text-rose-600 bg-rose-50 border border-rose-100 rounded-xl px-4 py-3">
-            {error}
-          </div>
+          <div className="text-sm text-rose-600 bg-rose-50 border border-rose-100 rounded-xl px-4 py-3">{error}</div>
         )}
 
         <button
@@ -149,7 +120,7 @@ export default function SettlementForm({
           disabled={loading}
           className="w-full bg-yellow-400 hover:bg-yellow-300 disabled:opacity-60 text-zinc-900 font-bold py-3 px-4 rounded-xl transition-colors text-sm"
         >
-          {loading ? "Recording…" : "Record payment"}
+          {loading ? t("settle.recording") : t("settle.submit")}
         </button>
       </form>
     </div>

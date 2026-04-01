@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { joinGroup } from "@/actions/groups";
+import { useT } from "@/components/providers/LanguageProvider";
 
 export default function JoinGroupPage() {
+  const { t } = useT();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -23,17 +25,15 @@ export default function JoinGroupPage() {
     <div className="max-w-lg">
       <div className="mb-8">
         <div className="w-12 h-12 bg-zinc-950 rounded-2xl flex items-center justify-center mb-4 text-xl">🔗</div>
-        <h1 className="text-3xl font-extrabold text-zinc-900 tracking-tight">Join a group</h1>
-        <p className="text-zinc-500 text-sm mt-1">
-          Ask your group admin for the 6-character invite code, then enter it below.
-        </p>
+        <h1 className="text-3xl font-extrabold text-zinc-900 tracking-tight">{t("join.title")}</h1>
+        <p className="text-zinc-500 text-sm mt-1">{t("join.subtitle")}</p>
       </div>
 
       <div className="bg-white rounded-3xl border border-zinc-100 p-7">
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">
-              Invite code
+              {t("join.inviteCode")}
             </label>
             <input
               name="inviteCode"
@@ -46,9 +46,7 @@ export default function JoinGroupPage() {
           </div>
 
           {error && (
-            <div className="text-sm text-rose-600 bg-rose-50 border border-rose-100 rounded-xl px-4 py-3">
-              {error}
-            </div>
+            <div className="text-sm text-rose-600 bg-rose-50 border border-rose-100 rounded-xl px-4 py-3">{error}</div>
           )}
 
           <button
@@ -56,7 +54,7 @@ export default function JoinGroupPage() {
             disabled={loading}
             className="w-full bg-yellow-400 hover:bg-yellow-300 disabled:opacity-60 text-zinc-900 font-bold py-3 px-4 rounded-xl transition-colors text-sm"
           >
-            {loading ? "Joining…" : "Join group"}
+            {loading ? t("join.joining") : t("join.submit")}
           </button>
         </form>
       </div>
