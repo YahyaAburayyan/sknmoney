@@ -71,69 +71,6 @@ All monetary values are **integer cents** throughout — in the database, server
 
 ---
 
-## Database Schema
-
-```
-profiles          → one row per user (linked to Supabase Auth)
-groups            → each apartment / household
-group_members     → many-to-many join with role (admin / member)
-expenses          → logged payments with soft-delete
-expense_splits    → per-person share of each expense
-settlements       → recorded repayments between two members
-```
-
-Migrations are in `supabase/migrations/` and must be applied in order via the Supabase SQL Editor.
-
----
-
-## Running Locally
-
-### Prerequisites
-- Node.js 18+
-- A [Supabase](https://supabase.com) project
-
-### Setup
-
-```bash
-# 1. Clone the repo
-git clone https://github.com/YahyaAburayyan/sknmoney.git
-cd sknmoney
-
-# 2. Install dependencies
-npm install
-
-# 3. Set environment variables
-cp .env.example .env.local
-# Fill in your Supabase URL and anon key in .env.local
-
-# 4. Run database migrations
-# Open the Supabase SQL Editor and apply in order:
-# supabase/migrations/001_initial_schema.sql
-# supabase/migrations/002_rls_policies.sql
-# supabase/migrations/003_functions.sql
-# supabase/migrations/004_join_group_function.sql
-# supabase/migrations/005_confirm_payment_received.sql
-# supabase/migrations/006_create_group_function.sql
-
-# 5. Start dev server
-npm run dev
-# → http://localhost:3000
-```
-
----
-
-## Key Design Decisions
-
-**Why Server Actions instead of an API?** Next.js 15 Server Actions colocate the mutation logic with the UI, eliminate a network round-trip, and give type-safe inputs without a separate API contract.
-
-**Why integer cents?** Floating-point arithmetic is unsuitable for money. `0.1 + 0.2 !== 0.3` in JavaScript. Storing cents as integers avoids this entirely.
-
-**Why RLS over application-layer filtering?** Database-level enforcement means security can't be accidentally bypassed by a missing `where` clause in application code. Every query is protected regardless of how it's written.
-
-**Why soft-delete?** Deleting an expense retroactively would silently change historical balances. Soft-delete preserves the audit trail while hiding the record from active views.
-
----
-
 ## Project Structure
 
 ```
@@ -159,13 +96,6 @@ src/
 
 ---
 
-## Screenshots
-
-| Landing | Dashboard | Add Expense | Balances |
-|---|---|---|---|
-| Clean landing page explaining the product | Overview of all your groups | Log an expense with equal or custom splits | See simplified debts, mark as paid |
-
----
 
 ## Roadmap
 
