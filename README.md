@@ -27,5 +27,3 @@ Next.js 15 · TypeScript · Supabase (Postgres + Auth + Realtime) · Tailwind CS
 ## Author
 
 **Yahya Abu Rayyan** — [GitHub](https://github.com/YahyaAburayyan)
-
-MIT License
