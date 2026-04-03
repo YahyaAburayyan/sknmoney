@@ -23,7 +23,6 @@ export default function ExpenseForm({ groupId, members, currentUserId }: Expense
   const [loading, setLoading] = useState(false);
   const [amountInput, setAmountInput] = useState("");
   const [splitType, setSplitType] = useState<"equal" | "custom">("equal");
-  const [paidBy, setPaidBy] = useState(currentUserId);
   const [splits, setSplits] = useState<Array<{ userId: string; amountCents: number }>>([]);
 
   const amountCents = parseCurrencyInput(amountInput);
@@ -53,7 +52,7 @@ export default function ExpenseForm({ groupId, members, currentUserId }: Expense
     const result = await createExpense(groupId, {
       description: form.description.value,
       amountCents,
-      paidBy,
+      paidBy: currentUserId,
       splitType,
       splits,
       date: form.date.value,
@@ -100,19 +99,6 @@ export default function ExpenseForm({ groupId, members, currentUserId }: Expense
               className={`${inputClass} ps-8`}
             />
           </div>
-        </div>
-
-        <div>
-          <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">
-            {t("expense.paidBy")}
-          </label>
-          <select value={paidBy} onChange={(e) => setPaidBy(e.target.value)} className={inputClass}>
-            {members.map((m) => (
-              <option key={m.id} value={m.id}>
-                {m.display_name} {m.id === currentUserId ? t("expense.you") : ""}
-              </option>
-            ))}
-          </select>
         </div>
 
         <div>
