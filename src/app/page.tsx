@@ -194,7 +194,7 @@ export default function LandingPage() {
               </svg>
             </a>
             <a
-              href="https://linkedin.com/in/yahia-abu-rayyan"
+              href="https://linkedin.com/in/yahyaaburayan"
               target="_blank"
               rel="noopener noreferrer"
               className="text-zinc-400 hover:text-zinc-900 transition-colors"
