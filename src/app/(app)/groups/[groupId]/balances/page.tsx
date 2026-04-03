@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { formatCents } from "@/lib/utils/currency";
-import { computeNetBalances, simplifyDebts } from "@/lib/algorithms/debt-simplification";
+import { computeNetBalances } from "@/lib/algorithms/debt-simplification";
 import MarkAsPaidButton from "@/components/settlements/MarkAsPaidButton";
 
 export default async function BalancesPage({
@@ -33,16 +33,30 @@ export default async function BalancesPage({
   const profileMap = Object.fromEntries(members.map((m) => [m.id, m]));
   const memberIds = members.map((m) => m.id);
 
-  const rawBalances = balancesResult.data ?? [];
-  const netBalances = computeNetBalances(rawBalances, memberIds);
-  const simplified = simplifyDebts(netBalances);
+  const rawBalances = (balancesResult.data ?? []) as Array<{
+    creditor_id: string;
+    debtor_id: string;
+    net_cents: number;
+  }>;
 
+  // Use raw pairwise balances — no simplification, keep real relationships
+  const myDebts = rawBalances
+    .filter((r) => r.debtor_id === user?.id && r.net_cents > 1)
+    .map((r) => ({ to: r.creditor_id, amount: r.net_cents }));
+
+  const myCredits = rawBalances
+    .filter((r) => r.creditor_id === user?.id && r.net_cents > 1)
+    .map((r) => ({ from: r.debtor_id, amount: r.net_cents }));
+
+  const otherTx = rawBalances
+    .filter((r) => r.creditor_id !== user?.id && r.debtor_id !== user?.id && r.net_cents > 1)
+    .map((r) => ({ from: r.debtor_id, to: r.creditor_id, amount: r.net_cents }));
+
+  const netBalances = computeNetBalances(rawBalances, memberIds);
   const myBalance = netBalances.find((b) => b.userId === user?.id);
   const myNet = myBalance?.net ?? 0;
 
-  const myDebts = simplified.filter((tx) => tx.from === user?.id);
-  const myCredits = simplified.filter((tx) => tx.to === user?.id);
-  const otherTx = simplified.filter((tx) => tx.from !== user?.id && tx.to !== user?.id);
+  const hasAnyBalances = rawBalances.some((r) => r.net_cents > 1);
 
   return (
     <div className="space-y-5">
@@ -148,7 +162,7 @@ export default async function BalancesPage({
       {otherTx.length > 0 && (
         <div>
           <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3 px-1">
-            Other payments in the group
+            Other balances in the group
           </p>
           <div className="bg-white rounded-2xl border border-zinc-100 divide-y divide-zinc-50">
             {otherTx.map((tx, i) => {
@@ -169,7 +183,7 @@ export default async function BalancesPage({
         </div>
       )}
 
-      {simplified.length === 0 && (
+      {!hasAnyBalances && (
         <div className="text-center py-16 bg-white rounded-3xl border border-zinc-100">
           <div className="w-14 h-14 bg-yellow-400 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl">
             🎉
