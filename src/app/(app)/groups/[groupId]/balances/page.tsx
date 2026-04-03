@@ -1,5 +1,4 @@
 import { createClient } from "@/lib/supabase/server";
-import Link from "next/link";
 import { formatCents } from "@/lib/utils/currency";
 import { computeNetBalances, simplifyDebts } from "@/lib/algorithms/debt-simplification";
 import MarkAsPaidButton from "@/components/settlements/MarkAsPaidButton";
@@ -95,20 +94,9 @@ export default async function BalancesPage({
                   </div>
                   <div className="flex items-center gap-3 flex-shrink-0">
                     <p className="font-extrabold text-zinc-900">{formatCents(tx.amount)}</p>
-                    <div className="flex flex-col items-end gap-1">
-                      <MarkAsPaidButton
-                        groupId={groupId}
-                        amountCents={tx.amount}
-                        direction="debtor"
-                        otherUserId={tx.to}
-                      />
-                      <Link
-                        href={`/groups/${groupId}/settle?to=${tx.to}&amount=${tx.amount}`}
-                        className="text-xs text-zinc-400 hover:text-zinc-600 underline"
-                      >
-                        Custom amount
-                      </Link>
-                    </div>
+                    <span className="text-xs text-zinc-400 bg-zinc-50 border border-zinc-100 px-3 py-1.5 rounded-lg">
+                      Waiting for confirmation
+                    </span>
                   </div>
                 </div>
               );
